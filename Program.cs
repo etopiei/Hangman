@@ -102,6 +102,14 @@ namespace Hangman
                 {
 
                     guessed[i] = true;
+                    bool Won = CheckIfYouWon(guessed, numberofletters, lettersarray);
+
+                    if (Won == true)
+                    {
+                        Console.WriteLine("Play Again? Enter 'y' for yes and 'n' for no.");
+                        string answer = Console.ReadLine();
+                        PlayAgain(answer);
+                    }
 
                 }
                 else
@@ -114,6 +122,72 @@ namespace Hangman
 
             PrintWord(lettersarray, guessed, numberofletters);
             AcceptGuess(lettersarray, guessed);
+        }
+
+        public bool CheckIfYouWon(bool[] guessed, int numberofletters, char[] lettersarray)
+        {
+
+            for (int i = 0; i < numberofletters; i++)
+            {
+
+                if (guessed[i] == false)
+                {
+
+                    break;
+
+                }
+                else
+                {
+
+                    if (i == numberofletters - 1)
+                    {
+                        Console.Clear();
+                        PrintWord(lettersarray, guessed, numberofletters);
+                        Console.WriteLine("\nYou Win!");
+                        return true;
+
+                    }
+                    else
+                    {
+
+                        continue;
+
+                    }
+
+                }
+
+            }
+
+            return false;
+
+        }
+
+        public void PlayAgain (string answer)
+
+        {
+           
+            if (answer == "y")
+            {
+                Console.Clear();
+                Console.WriteLine("Welcome to Hangman!");
+                ChooseWord();
+
+            }
+            else if (answer == "n")
+            {
+
+                Console.Clear();
+                Environment.Exit(0);
+              
+            }
+            else
+            {
+
+                Console.WriteLine("Please enter 'y' or 'n' in lowercase.");
+                string answer2 = Console.ReadLine();
+                PlayAgain(answer2);
+            }
+
         }
 
     }
