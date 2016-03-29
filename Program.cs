@@ -16,57 +16,104 @@ namespace Hangman
     class Game
     {
 
-        string chosenword = "";
-
         public void ChooseWord()
         {
 
             WordList words = new WordList();
-            chosenword = words.ChooseRandomWord();
+            string chosenword = words.ChooseRandomWord();
+            ConvertWordToArray(chosenword);
 
         }
 
-        public void ConvertWordToArray()
+        public void ConvertWordToArray(string chosenword)
         {
 
             // Use ToCharArray to convert string to array.
             char[] lettersarray = chosenword.ToCharArray();
+            int numberofletters = lettersarray.Length;
 
-            for (int i = 0; i < lettersarray.Length; i++)
+            bool[] guessed = new bool[numberofletters]; 
+
+            PrintWord(lettersarray, guessed, numberofletters);
+
+            AcceptGuess(lettersarray, guessed);
+
+        }
+
+        public void PrintWord(char[] lettersarray, bool[] guessed, int numberofletters)
+        {
+
+            for (int i = 0; i < numberofletters; i++)
             {
-                // Display each blank space.
-                Console.Write("_");
+                if (guessed[i] == false)
+                {
+                    // Display each blank space.
+                    Console.Write("_ ");
+                }
+                else
+                {
+                    char letter = lettersarray[i];
+                    Console.Write(letter);
+
+                }
             }
 
         }
 
-        public void AcceptGuess()
+        public void AcceptGuess(char[] lettersarray, bool[] guessed)
         {
 
-            Console.WriteLine("Please enter a letter to guess:");
+            Console.WriteLine("\nPlease enter a letter to guess:");
             string guess = Console.ReadLine();
-
+            ParseInputData(guess, lettersarray, guessed);
         }
 
-        public void ParseInputData()
+        public void ParseInputData(string guess, char[] lettersarray, bool[] guessed)
         {
 
             //check input is only one letter
 
+            if (guess.Length == 1)
+            {
+
+                char letterguess = guess[0];
+                letterguess = Char.ToLower(letterguess);
+                CheckGuess(letterguess, lettersarray, guessed);
+
+            }
+            else
+            {
+                
+                Console.WriteLine("Please enter only one letter.");
+                AcceptGuess(lettersarray, guessed);
+            
+            }
+
         }
 
-        public void CheckGuess()
+        public void CheckGuess(char letterguess, char[] lettersarray, bool[] guessed)
         {
-
+            int numberofletters = lettersarray.Length;
             //compare guess to elements in array
+            for (int i = 0; i < numberofletters; i++)
+            {
 
-        }
+                if (letterguess == lettersarray[i])
+                {
 
-        public void OutputGuessResult()
-        {
+                    guessed[i] = true;
 
-            //output dashes and letters where they have been guessed
+                }
+                else
+                {
+                    continue;
 
+                }
+
+            }
+
+            PrintWord(lettersarray, guessed, numberofletters);
+            AcceptGuess(lettersarray, guessed);
         }
 
     }
