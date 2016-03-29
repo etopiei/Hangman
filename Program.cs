@@ -32,11 +32,13 @@ namespace Hangman
             char[] lettersarray = chosenword.ToCharArray();
             int numberofletters = lettersarray.Length;
 
-            bool[] guessed = new bool[numberofletters]; 
+            bool[] guessed = new bool[numberofletters];
+
+            int numberofincorrectguessesremaining = 8;
 
             PrintWord(lettersarray, guessed, numberofletters);
 
-            AcceptGuess(lettersarray, guessed);
+            AcceptGuess(lettersarray, guessed, numberofincorrectguessesremaining);
 
         }
 
@@ -60,39 +62,41 @@ namespace Hangman
 
         }
 
-        public void AcceptGuess(char[] lettersarray, bool[] guessed)
+        public void AcceptGuess(char[] lettersarray, bool[] guessed, int numberofincorrectguessesremaining)
         {
-
+            Console.WriteLine("\n{0} Incorrect guesses remaining", numberofincorrectguessesremaining);
             Console.WriteLine("\nPlease enter a letter to guess:");
             string guess = Console.ReadLine();
-            ParseInputData(guess, lettersarray, guessed);
+            ParseInputData(guess, lettersarray, guessed, numberofincorrectguessesremaining);
         }
 
-        public void ParseInputData(string guess, char[] lettersarray, bool[] guessed)
+        public void ParseInputData(string guess, char[] lettersarray, bool[] guessed, int numberofincorrectguessesremaining)
         {
 
             //check input is only one letter
 
             if (guess.Length == 1)
             {
+                    char letterguess = guess[0];
+                    letterguess = Char.ToLower(letterguess);
+                    CheckGuess(letterguess, lettersarray, guessed, numberofincorrectguessesremaining);
 
-                char letterguess = guess[0];
-                letterguess = Char.ToLower(letterguess);
-                CheckGuess(letterguess, lettersarray, guessed);
 
             }
             else
             {
                 
                 Console.WriteLine("Please enter only one letter.");
-                AcceptGuess(lettersarray, guessed);
+                AcceptGuess(lettersarray, guessed, numberofincorrectguessesremaining);
             
             }
 
         }
 
-        public void CheckGuess(char letterguess, char[] lettersarray, bool[] guessed)
+        public void CheckGuess(char letterguess, char[] lettersarray, bool[] guessed, int numberofincorrectguessesremaining)
         {
+
+            bool correctguess = false;
             int numberofletters = lettersarray.Length;
             //compare guess to elements in array
             for (int i = 0; i < numberofletters; i++)
@@ -102,6 +106,7 @@ namespace Hangman
                 {
 
                     guessed[i] = true;
+                    correctguess = true;
                     bool Won = CheckIfYouWon(guessed, numberofletters, lettersarray);
 
                     if (Won == true)
@@ -120,8 +125,31 @@ namespace Hangman
 
             }
 
-            PrintWord(lettersarray, guessed, numberofletters);
-            AcceptGuess(lettersarray, guessed);
+            if (correctguess == false)
+            {
+
+                numberofincorrectguessesremaining = numberofincorrectguessesremaining - 1;
+
+            }  
+
+            if (numberofincorrectguessesremaining > 0)
+            {
+
+                PrintWord(lettersarray, guessed, numberofletters);
+                AcceptGuess(lettersarray, guessed, numberofincorrectguessesremaining);
+
+            }
+            else
+            {
+
+                Console.WriteLine("Out of guesses!");
+                string word = new string(lettersarray);
+                Console.WriteLine("The word was: {0}", word);
+                Console.WriteLine("Play Again? Enter 'y' for yes and 'n' for no.");
+                string answer = Console.ReadLine();
+                PlayAgain(answer);
+
+            }
         }
 
         public bool CheckIfYouWon(bool[] guessed, int numberofletters, char[] lettersarray)
