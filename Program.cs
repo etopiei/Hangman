@@ -7,6 +7,9 @@ namespace Hangman
         public static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Hangman!");
+
+            Game newgame = new Game();
+            newgame.ChooseWord();
         }
     }
 
@@ -16,7 +19,8 @@ namespace Hangman
         public void ChooseWord()
         {
 
-
+            WordList words = new WordList();
+            string chosenword = words.ChooseRandomWord();
 
         }
 
